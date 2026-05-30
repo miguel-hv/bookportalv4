@@ -1,0 +1,4 @@
+logging:
+  level:
+    com.bookportal: DEBUG
+    org.springframework.web: DEBUG

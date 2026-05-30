@@ -1,0 +1,43 @@
+Usar IA paso a paso: meter engram y agentes/skills, siendo una de las skills encargada de explicar el proceso y de referenciar términos de arquitectura de software (hacer una skill de technical leader para 
+
+HAcer un readme claro para el proyecto y otro para el report (breve tesis) explicando qué se pretende y por qué se hizo
+
+Orientar la web a ser una demo y escuela, no a parecer una profesional
+Pocos registros en bd, simular carga pasando varias veces el mismo libro(? esto no simula carga en bd, que es lo importante, aunque se puede hacer que publicar un libro guarde varios como publicar una colección. En vez de hacer formularios, tener una lista preparada en front para que el usuario clique y se suban varios títulos, permitir también formulario individual)
+
+    User 
+puede comprar libros
+puede votar libros y dejar opiniones
+puede meter libros en favoritos
+puede seguir (fan) a un autor
+tiene mensajes del sistema (mensaje de bienvenida al registrarse, mensaje de seguir a autor o votación, etc aunque sea redundante pero por entrenar el mandar mensajes y event driven) 
+
+    Admin 
+puede subir y borrar libros
+debe revisar los libros que se suban (y su autor) (puede hacerlo en batch sin mirar)
+puede bloquear usuarios (user no puede comprar libros)
+tiene mensajes del sistema (sobre el lote de subidas cuando hay error o se completa o cuando bloquea a un usuario)
+
+    Libro
+tiene puntuación 0-5 estrellas
+tiene comentarios de usuarios
+tiene autor (autor tiene que existir en bd para poder asignarse pero se puede dejar sin asignar)
+tiene validado (bool para todos los datos correctos) (lo hace un admin)
+NO poner isdin (más flexible)
+
+    Autor
+puede subir libros
+tiene libros 
+tiene fans
+
+
+AGENTES
+- technical lead: discutir el planteamiento del usuario, crear tareas y revisar las tareas hechas para ver si refactorizar
+- manager: kanban y escribir/editar ficheros
+- uxui: maquetación
+- developer: frontend y backend
+- orquestador: organiza
+- qa: unit testing y e2e testing
+
+
+

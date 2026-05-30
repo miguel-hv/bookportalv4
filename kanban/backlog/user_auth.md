@@ -1,0 +1,1 @@
+Create user entity (name -not email- and password only) and auth with jwt and refresh token.

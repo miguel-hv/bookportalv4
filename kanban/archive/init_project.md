@@ -1,0 +1,1 @@
+nextjs con tailwind y java api sin auth, con entorno dev y pro en docker. hacer un endpoint /welcome para mostrar un Hola Mundo y comprobar que está bien montado

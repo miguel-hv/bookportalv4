@@ -1,0 +1,36 @@
+# Java / Maven
+target/
+*.jar
+*.war
+*.class
+*.log
+
+# Next.js
+node_modules/
+.next/
+out/
+
+# pnpm
+.pnpm-store/
+.pnpm/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+todolist.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker/data/

@@ -1,0 +1,4 @@
+logging:
+  level:
+    com.bookportal: WARN
+    org.springframework.web: WARN

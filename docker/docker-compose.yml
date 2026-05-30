@@ -1,0 +1,153 @@
+services:
+  # ──────────────────────────────────────────────
+  # Database — dev profile
+  # ──────────────────────────────────────────────
+  db-dev:
+    image: postgres:16-alpine
+    container_name: bookportal-db-dev
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-bookportal}
+      POSTGRES_USER: ${POSTGRES_USER:-bookportal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bookportal}
+    ports:
+      - "${DB_PORT_DEV:-5433}:5432"
+    volumes:
+      - pgdata-dev:/var/lib/postgresql/data
+      - ../database/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bookportal}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - dev
+
+  # ──────────────────────────────────────────────
+  # Database — pro profile
+  # ──────────────────────────────────────────────
+  db-pro:
+    image: postgres:16-alpine
+    container_name: bookportal-db-pro
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-bookportal}
+      POSTGRES_USER: ${POSTGRES_USER:-bookportal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bookportal}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata-pro:/var/lib/postgresql/data
+      - ../database/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bookportal}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - pro
+
+  # ──────────────────────────────────────────────
+  # Backend — dev profile (hot-reload via devtools)
+  # ──────────────────────────────────────────────
+  backend-dev:
+    image: maven:3.9.9-eclipse-temurin-21-alpine
+    container_name: bookportal-backend-dev
+    working_dir: /app
+    command: >
+      sh -c "
+        mvn dependency:go-offline &&
+        mvn spring-boot:run -Dspring-boot.run.profiles=dev
+      "
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-dev:5432/${POSTGRES_DB:-bookportal}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-bookportal}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-bookportal}
+      SPRING_DEVTOOLS_RESTART_POLL_INTERVAL: 2s
+      SPRING_DEVTOOLS_RESTART_QUIET_PERIOD: 400ms
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    volumes:
+      - ../backend:/app
+      - maven-repo:/root/.m2
+    depends_on:
+      db-dev:
+        condition: service_healthy
+    profiles:
+      - dev
+
+  # ──────────────────────────────────────────────
+  # Backend — pro profile (multi-stage Dockerfile)
+  # ──────────────────────────────────────────────
+  backend-pro:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: bookportal-backend-pro
+    environment:
+      SPRING_PROFILES_ACTIVE: pro
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-pro:5432/${POSTGRES_DB:-bookportal}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-bookportal}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-bookportal}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      db-pro:
+        condition: service_healthy
+    profiles:
+      - pro
+
+  # ──────────────────────────────────────────────
+  # Frontend — dev profile (HMR via next dev)
+  # ──────────────────────────────────────────────
+  frontend-dev:
+    image: node:20-alpine
+    container_name: bookportal-frontend-dev
+    working_dir: /app
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm dev"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_PORT:-8080}
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+      - /app/.next
+      - /app/.pnpm-store
+    depends_on:
+      - backend-dev
+    profiles:
+      - dev
+
+  # ──────────────────────────────────────────────
+  # Frontend — pro profile (multi-stage Dockerfile)
+  # ──────────────────────────────────────────────
+  frontend-pro:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: bookportal-frontend-pro
+    depends_on:
+      - backend-pro
+    profiles:
+      - pro
+
+  # ──────────────────────────────────────────────
+  # Nginx reverse proxy — pro only
+  # ──────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: bookportal-nginx
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend-pro
+      - backend-pro
+    profiles:
+      - pro
+
+volumes:
+  pgdata-dev:
+  pgdata-pro:
+  maven-repo:
