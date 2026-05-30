@@ -13,4 +13,4 @@ Java backend, postgres database, Nextjs frontend with tailwind, docker with dev 
 
 ## Agents
 
-Using (Gentle-AI)[https://github.com/Gentleman-Programming/gentle-ai/blob/main]
+Using [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai/blob/main)
