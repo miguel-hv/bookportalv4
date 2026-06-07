@@ -1,0 +1,4 @@
+- [x] review docker errors when running docker compose --profile dev up
+- [x] create makefile with commands to run docker compose and other useful commands
+- [x] add instructions to readme on how to run the project with docker compose
+- [x] add instructions to readme on how to run the project without docker compose
