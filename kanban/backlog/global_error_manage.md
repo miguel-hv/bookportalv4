@@ -1,0 +1,1 @@
+global error manager in java and next

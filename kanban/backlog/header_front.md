@@ -1,0 +1,1 @@
+- create header when user is logged in; header must display username and logout button, as well as a menu displaying the links for navigating (put the links in a row in a fashion-like tabs but dont make it tabs, just regular links) 

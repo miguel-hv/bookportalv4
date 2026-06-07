@@ -1,23 +1,16 @@
 package com.bookportal.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * CORS configuration has been consolidated into {@link SecurityConfig}.
+ * This class is intentionally left empty to avoid duplicate CORS configuration.
+ *
+ * @see SecurityConfig#corsConfigurationSource()
+ */
 @Configuration
 public class CorsConfig {
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                        .allowedHeaders("*");
-            }
-        };
-    }
+    // CORS is now configured in SecurityConfig via CorsConfigurationSource bean.
+    // This class remains as a bean placeholder to avoid injection issues
+    // if other components reference it by type.
 }

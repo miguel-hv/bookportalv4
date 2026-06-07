@@ -1,0 +1,13 @@
+- [x] add dependencies to pom.xml (JPA, Security, JWT, PostgreSQL)
+- [x] create User entity (name + password only)
+- [x] create RefreshToken entity
+- [x] update database/init/001-init.sql (replace users table, add refresh_tokens)
+- [x] create DTOs (auth request/response)
+- [x] create repositories (UserRepository, RefreshTokenRepository)
+- [x] create JwtService (generate/validate access + refresh tokens)
+- [x] create AuthService (register, login, refresh, logout)
+- [x] create SecurityConfig (filter chain, password encoder, CORS)
+- [x] create JwtAuthFilter (OncePerRequestFilter)
+- [x] create AuthController (register, login, refresh, logout, me)
+- [x] update application configs (jwt secret, expiration, ddl-auto)
+- [x] write tests (JwtService, AuthController)

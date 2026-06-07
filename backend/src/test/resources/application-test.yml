@@ -1,20 +1,19 @@
-server:
-  port: 8080
-
 spring:
-  application:
-    name: bookportal-api
+  test:
+    database:
+      replace: any
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: create-drop
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
   datasource:
-    url: jdbc:postgresql://localhost:${DB_PORT_DEV:5433}/bookportal
-    username: ${POSTGRES_USER:bookportal}
-    password: ${POSTGRES_PASSWORD:bookportal}
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
 
 jwt:
   secret: "c2VjdXJlLXNlY3JldC1rZXktZm9yLWJvb2twb3J0YWwtand0LXNpZ25pbmctbWluaW11bS0yNTYtYml0cw=="
