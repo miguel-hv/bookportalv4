@@ -1,8 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useAuth } from '@/components/auth/AuthProvider'
+import AuthStatus from '@/components/auth/AuthStatus'
 
 export default function Home() {
+  const { isAuthenticated } = useAuth()
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -44,6 +48,27 @@ export default function Home() {
         {!loading && !error && message && (
           <p className="text-xl text-gray-700">{message}</p>
         )}
+
+        <div className="mt-6">
+          {isAuthenticated ? (
+            <AuthStatus />
+          ) : (
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/login"
+                className="w-full rounded-lg bg-blue-600 px-4 py-2 text-center text-white transition-colors hover:bg-blue-700"
+              >
+                Iniciar Sesión
+              </Link>
+              <Link
+                href="/register"
+                className="w-full rounded-lg bg-green-600 px-4 py-2 text-center text-white transition-colors hover:bg-green-700"
+              >
+                Registrarse
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </main>
   )

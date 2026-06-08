@@ -100,3 +100,7 @@ pnpm dev
 ## Agents
 
 Using [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai/blob/main)
+
+## Conclusions and thoughts
+
+I see how I should be doing a figma before the webpage; at least, some schema displaying what I need so I can come up with all the needed tasks aupfront. Right now I'm creating tasks as I progress and see the needs for them, but I lacked the full picture when planning at the start. 

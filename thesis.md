@@ -135,10 +135,129 @@ Esto permite correr `node server.js` sin tener Next.js instalado — ideal para 
 
 **Para investigar**: Next.js standalone output, automatic static optimization, server actions vs API routes.
 
+## Autenticación Frontend
+
+### Backend for Frontend (BFF)
+
+```mermaid
+Browser ──GET /api/auth/session──→ Next.js API Route
+                                       │
+                                       ▼  fetch() server-side
+                                    Spring Boot (/api/auth/me)
+                                       │
+                                       ▼
+Browser ←── httpOnly cookie + JSON ──
+```
+
+El **BFF** es una capa intermedia que vive en el mismo servidor que el frontend (en nuestro caso, Next.js API Routes). El browser nunca habla directo con el backend de Java para auth — todo pasa por Next.js del lado del servidor.
+
+**¿Por qué?**
+- El token JWT nunca llega al browser → eliminás el vector XSS de localStorage
+- Las httpOnly cookies se envían automáticamente en cada request (mismo origin)
+- La lógica de refresh/expiración queda server-side, invisible para el cliente
+
+**¿Cuándo NO usarlo?**
+- Cuando el backend y frontend comparten el mismo dominio (sin CORS)
+- En proyectos chicos donde la seguridad extra no justifica la complejidad
+- Cuando usás un API Gateway que ya maneja auth (Kong, Zuul, etc.)
+
+**Para investigar**: BFF pattern, Backend for Frontend (Sam Newman), API Gateway vs BFF, httpOnly cookies vs localStorage, XSS attack vectors.
+
+### httpOnly Cookies vs localStorage
+
+| Aspecto | localStorage | httpOnly Cookie |
+|---------|-------------|-----------------|
+| Acceso JS | ✅ Lectura/escritura directa | ❌ Inaccesible |
+| XSS | 🚫 Token robado si hay XSS | ✅ Seguro |
+| CSRF | ✅ No aplica | ⚠️ Requiere SameSite |
+| Envío automático | ❌ Hay que inyectar header | ✅ El browser lo hace |
+| Expiración | Manual | Server-set via maxAge |
+| Multi-tab | Compartido | Compartido |
+
+La regla práctica: **httpOnly cookies para tokens de auth, localStorage para preferencias de usuario (tema, idioma, etc.)**.
+
+**Para investigar**: httpOnly flag, SameSite cookies (Strict vs Lax vs None), CSRF attacks, XSS vs CSRF.
+
+### El patrón `/api/auth/me` (Session Endpoint)
+
+Es el endpoint que responde "¿quién soy?" validando el token contra la base de datos. Es un **patrón universal**:
+
+| Plataforma | Endpoint |
+|---|---|
+| Auth0 | `/userinfo` |
+| Firebase | `onAuthStateChanged()` |
+| Supabase | `GET /auth/v1/user` |
+| Microsoft Graph | `GET /me` |
+| Nuestro BFF | `GET /api/auth/session` |
+
+**¿Por qué no alcanza con decodificar el JWT en el cliente?**
+- El JWT tiene datos estáticos desde que se emitió
+- Si el usuario cambió su nombre, o lo bannearon, el JWT no lo sabe
+- `/me` te da la verdad actual desde la DB
+- Se llama en cada **hard load** (refresh, nueva pestaña) — no en soft navigations
+
+**Para investigar**: JWT decoding vs validation, token introspection, session management patterns (OWASP).
+
+### Narrow Interface (Interface Segregation)
+
+Del cuarto principio SOLID — **Interface Segregation Principle (ISP)**:
+
+> Una función debería recibir solo lo que necesita, ni más ni menos.
+
+**Ejemplo concreto** — `setAuthCookies()`:
+
+```typescript
+// ❌ Interfaz ancha: recibe todo AuthResponse, pero solo necesita 3 campos
+function setAuthCookies(response: AuthResponse) { ... }
+
+// ✅ Interfaz angosta: recibe exactamente lo que necesita
+type SetCookieParams = {
+  accessToken: string
+  refreshToken: string
+  expiresIn: number
+}
+function setAuthCookies(params: SetCookieParams) { ... }
+```
+
+**¿Por qué importa?** Porque cuando el session route necesita setear cookies nuevas después de un refresh, no tiene un `user` disponible todavía. Con la interfaz angosta no tiene que inventar datos que no tiene.
+
+**Para investigar**: ISP (Interface Segregation Principle), SOLID principles, skinny interfaces, dependency inversion.
+
+### 201 Created vs 200 OK
+
+| Código | Cuándo usarlo |
+|--------|--------------|
+| **200 OK** | La request se procesó correctamente |
+| **201 Created** | Se CREÓ un recurso nuevo (POST de registro, creación de entidad) |
+| **204 No Content** | Se procesó pero no hay contenido para devolver (DELETE) |
+
+En nuestro register route, devolver 200 estaría mal semánticamente — la registración **crea** un usuario, debería responder 201. Next.js `NextResponse.json()` por defecto devuelve 200, hay que pasar `{ status: 201 }` explícitamente.
+
+**Para investigar**: HTTP status codes semántica, RESTful API design, resource creation patterns.
+
+### SDD Verification
+
+La verificación en SDD no es testing. Es **comparar el código contra las especificaciones** y reportar discrepancias:
+
+```
+Verify:     "¿Está el botón de logout?"        ← revisión de código
+Test:       "¿El botón de logout funciona?"     ← ejecución real
+```
+
+Niveles de severidad:
+- **CRITICAL**: algo obligatorio que falta — debe arreglarse antes de archivar
+- **WARNING**: algo que no cumple exactamente la spec pero no rompe nada
+- **SUGGESTION**: mejora opcional
+
+En la industria, esto existe como QA, code review, acceptance criteria, Definition of Done. SDD lo formaliza y automatiza para que no dependa de "acordarse".
+
+**Para investigar**: Static analysis vs dynamic testing, QA workflows, acceptance test-driven development (ATDD), Definition of Done.
+
 ## Próximos Pasos
 
-Para profundizar en la próxima etapa (autenticación, logs, eventos):
-- **Auth**: JWT vs Session tokens, OAuth2, Spring Security filter chain, NextAuth.js
+Para profundizar en lo que sigue:
 - **Observability**: OpenTelemetry, structured logging (Loki), metrics (Prometheus), distributed tracing (Tempo)
 - **Event-driven**: Event sourcing, CQRS, message brokers (RabbitMQ/Kafka), outbox pattern
 - **Hexagonal Architecture**: Ports & Adapters, domain-driven design, dependency inversion
+- **Auth avanzado**: OAuth2, OIDC, NextAuth.js / Auth.js, RBAC vs ABAC
+- **Testing**: Jest + React Testing Library, Playwright E2E, MSW (Mock Service Worker) para mockear APIs
