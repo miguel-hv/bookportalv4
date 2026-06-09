@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.regex.Pattern;
 
 @Service
 public class AuthService {
@@ -40,6 +41,9 @@ public class AuthService {
     public AuthResponse register(RegisterRequest request) {
         if (request.name() == null || request.name().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");
+        }
+        if (!Pattern.matches("^[a-zA-Z0-9]+$", request.name())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username must contain only letters and numbers");
         }
         if (request.password() == null || request.password().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is required");

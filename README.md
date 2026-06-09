@@ -99,7 +99,7 @@ pnpm dev
 
 ## Agents
 
-Using [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai/blob/main)
+Using [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai/blob/main). Vas a ver que los textos están en argentino jajjaj
 
 ## Conclusions and thoughts
 

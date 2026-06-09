@@ -104,6 +104,7 @@ services:
     working_dir: /app
     command: sh -c "npm install -g pnpm && pnpm install && pnpm dev"
     environment:
+      SPRING_BOOT_URL: http://backend-dev:8080
       NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_PORT:-8080}
       WATCHPACK_POLLING: "true"
     ports:

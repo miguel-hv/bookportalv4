@@ -1,0 +1,6 @@
+- each user can have books review collection and can create books review
+- create BookReview entity in backend with fields: name (for the book's name), review (user opinion) and id (unique for each review)
+- join entity to user so user has a bookreviews array
+- create form in frontend (reviews/add) so the user can post a book review
+- create reviewslist (/reviews) in frontend so every review of every user can be listed (infinite scroll)
+- seed 1 review for each seeded user in backend 

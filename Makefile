@@ -59,8 +59,8 @@ build-frontend:        ## Construir solo frontend pro
 # ──────────────────────────────────────────────
 
 .PHONY: logs
-logs:                  ## Logs de todos los servicios
-	$(DC) logs -f
+logs:                   ## Logs de todos los servicios
+	$(DC) --profile dev --profile pro logs -f
 
 .PHONY: logs-backend
 logs-backend:          ## Logs del backend (dev)
@@ -124,6 +124,17 @@ images:                ## Listar imágenes del proyecto
 # ──────────────────────────────────────────────
 # 🛠  Utils
 # ──────────────────────────────────────────────
+
+.PHONY: test-backend
+test-backend:          ## Tests del backend (dev)
+	$(DC_DEV) exec -e SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb backend-dev mvn test
+
+.PHONY: test-frontend
+test-frontend:         ## Tests del frontend (dev)
+	$(DC_DEV) exec frontend-dev npx jest --no-cache
+
+.PHONY: test
+test: test-backend test-frontend  ## Tests de backend + frontend
 
 .PHONY: exec-backend
 exec-backend:          ## Shell dentro del backend (dev)

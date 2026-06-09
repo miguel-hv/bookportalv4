@@ -1,6 +1,15 @@
 export interface User {
   id: number
   name: string
+  createdAt?: string
+}
+
+export interface PaginatedResponse<T> {
+  content: T[]
+  totalElements: number
+  totalPages: number
+  number: number
+  size: number
 }
 
 export interface AuthTokens {

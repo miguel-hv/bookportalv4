@@ -13,14 +13,25 @@ export default function RegisterForm() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [usernameError, setUsernameError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+
+  const validateUsername = (value: string): boolean => {
+    return /^[a-zA-Z0-9]+$/.test(value)
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
+    setUsernameError(null)
 
     if (!name.trim() || !password.trim() || !confirmPassword.trim()) {
       setError('Completá todos los campos')
+      return
+    }
+
+    if (!validateUsername(name.trim())) {
+      setUsernameError('El nombre solo puede contener letras y números')
       return
     }
 
@@ -54,12 +65,20 @@ export default function RegisterForm() {
             id="register-name"
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value)
+              setUsernameError(null)
+            }}
             disabled={submitting}
             required
+            pattern="[a-zA-Z0-9]+"
+            title="Solo letras y números (sin espacios ni caracteres especiales)"
             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
             placeholder="Elegí un nombre de usuario"
           />
+          {usernameError && (
+            <p className="text-sm text-red-600">{usernameError}</p>
+          )}
         </div>
 
         <div>

@@ -1,0 +1,3 @@
+- use guards in front and back so users can't have special characters nor spaces in their names (just letters and numbers)
+- create a userlist page in front (/users): make row cards with field name as the only info (in the future will have more but let's start simple) with infinite scroll
+- seed 5 users with default password (123) in backend for dev env
