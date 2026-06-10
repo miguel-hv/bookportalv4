@@ -43,3 +43,16 @@ export interface RegisterInput {
   name: string
   password: string
 }
+
+export interface ReviewResponse {
+  id: number
+  bookTitle: string
+  reviewText: string
+  userName: string
+  createdAt: string
+}
+
+export interface CreateReviewInput {
+  bookTitle: string
+  reviewText: string
+}
