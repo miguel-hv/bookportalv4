@@ -1,0 +1,10 @@
+- crear header/menú de navegación global en frontend
+- logo/nombre "Bookportal" linkeado a home (/)
+- nav links a: Reseñas (/reviews), Usuarios (/users)
+- si autenticado: mostrar nombre de usuario + botón de logout
+- si no autenticado: mostrar links a Login (/login) y Register (/register)
+- estado de carga mientras se verifica sesión (evitar flash de login)
+- resaltar link activo según ruta actual
+- diseño responsive (mobile-friendly)
+- integrar en layout.tsx raíz para que aparezca en todas las páginas
+- si ya existe un header, reemplazarlo / mejorarlo

@@ -148,6 +148,14 @@ exec-frontend:         ## Shell dentro del frontend (dev)
 exec-db:               ## psql dentro de la db (dev)
 	$(DC_DEV) exec db-dev psql -U bookportal -d bookportal
 
+.PHONY: db-reset
+db-reset:              ## Resetear base de datos (dev) y reiniciar backend para que corran migrations + seed
+	$(DC_DEV) stop db-dev
+	$(DC_DEV) rm -f db-dev
+	docker volume rm bookportalv4_pgdata-dev -f
+	$(DC_DEV) up -d db-dev
+	$(DC_DEV) restart backend-dev
+
 .PHONY: db-migrate
 db-migrate:            ## Ejecutar scripts de init sobre db-dev (forzado)
 	$(DC_DEV) exec db-dev psql -U bookportal -d bookportal -f /docker-entrypoint-initdb.d
