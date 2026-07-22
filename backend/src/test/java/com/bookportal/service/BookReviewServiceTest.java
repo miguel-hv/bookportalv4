@@ -175,7 +175,7 @@ class BookReviewServiceTest {
         Pageable pageable = PageRequest.of(0, 20);
         Page<BookReview> reviewPage = new PageImpl<>(List.of(testReview), pageable, 1);
 
-        when(bookReviewRepository.findAllByOrderByCreatedAtDesc(pageable)).thenReturn(reviewPage);
+        when(bookReviewRepository.findAllWithUser(pageable)).thenReturn(reviewPage);
 
         Page<ReviewResponse> result = bookReviewService.getReviews(pageable);
 
@@ -192,7 +192,7 @@ class BookReviewServiceTest {
         assertThat(response.userName()).isEqualTo("testuser");
         assertThat(response.createdAt()).isNotNull();
 
-        verify(bookReviewRepository).findAllByOrderByCreatedAtDesc(pageable);
+        verify(bookReviewRepository).findAllWithUser(pageable);
     }
 
     @Test
@@ -200,7 +200,7 @@ class BookReviewServiceTest {
         Pageable pageable = PageRequest.of(0, 20);
         Page<BookReview> emptyPage = Page.empty();
 
-        when(bookReviewRepository.findAllByOrderByCreatedAtDesc(pageable)).thenReturn(emptyPage);
+        when(bookReviewRepository.findAllWithUser(pageable)).thenReturn(emptyPage);
 
         Page<ReviewResponse> result = bookReviewService.getReviews(pageable);
 

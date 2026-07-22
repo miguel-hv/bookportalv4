@@ -55,7 +55,7 @@ public class BookReviewService {
 
     @Transactional(readOnly = true)
     public Page<ReviewResponse> getReviews(Pageable pageable) {
-        return bookReviewRepository.findAllByOrderByCreatedAtDesc(pageable)
+        return bookReviewRepository.findAllWithUser(pageable)
                 .map(ReviewResponse::from);
     }
 }

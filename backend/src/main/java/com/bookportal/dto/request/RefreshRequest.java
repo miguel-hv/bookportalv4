@@ -1,4 +1,9 @@
 package com.bookportal.dto.request;
 
-public record RefreshRequest(String refreshToken) {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Request body for token refresh")
+public record RefreshRequest(
+    @Schema(description = "Refresh token", required = true) String refreshToken
+) {
 }

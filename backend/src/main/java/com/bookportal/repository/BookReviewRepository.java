@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface BookReviewRepository extends JpaRepository<BookReview, Long> {
 
-    @Query("SELECT r FROM BookReview r JOIN FETCH r.user ORDER BY r.createdAt DESC")
-    Page<BookReview> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    @Query("SELECT r FROM BookReview r JOIN FETCH r.user")
+    Page<BookReview> findAllWithUser(Pageable pageable);
 }

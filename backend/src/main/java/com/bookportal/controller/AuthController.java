@@ -7,6 +7,8 @@ import com.bookportal.dto.request.RegisterRequest;
 import com.bookportal.dto.response.AuthResponse;
 import com.bookportal.dto.response.UserResponse;
 import com.bookportal.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "User registration, login, and token management")
 public class AuthController {
 
     private final AuthService authService;
@@ -27,27 +30,32 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register a new user", description = "Create a new user account and return JWT tokens")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Authenticate user and return JWT tokens")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/refresh")
+    @Operation(summary = "Refresh access token", description = "Exchange a refresh token for a new access token")
     public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest request) {
         return ResponseEntity.ok(authService.refresh(request));
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "Logout", description = "Invalidate the refresh token")
     public ResponseEntity<Void> logout(@RequestBody LogoutRequest request) {
         authService.logout(request);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/me")
+    @Operation(summary = "Get current user", description = "Return the authenticated user's information")
     public ResponseEntity<UserResponse> me(Authentication authentication) {
         Long userId = (Long) authentication.getPrincipal();
         return ResponseEntity.ok(authService.getCurrentUser(userId));

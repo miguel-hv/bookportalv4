@@ -20,3 +20,12 @@ jwt:
   secret: "c2VjdXJlLXNlY3JldC1rZXktZm9yLWJvb2twb3J0YWwtand0LXNpZ25pbmctbWluaW11bS0yNTYtYml0cw=="
   access-token-expiration: 900000
   refresh-token-expiration: 604800000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  packages-to-scan: com.bookportal.controller
