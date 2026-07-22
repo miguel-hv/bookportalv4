@@ -45,6 +45,28 @@ make build    # Construir imágenes
 make up-pro   # Levantar con Nginx
 ```
 
+### Database access (pgAdmin)
+
+```bash
+# Levantar pgAdmin (si no está ya corriendo)
+make up-dev
+
+# Accedé a http://localhost:5050
+# Email: admin@admin.com
+# Password: admin
+```
+
+Al ingresar, agregá un nuevo servidor con estos datos:
+
+| Campo    | Valor       |
+| -------- | ----------- |
+| Host     | `db-dev`    |
+| Port     | `5432`      |
+| Username | `bookportal`|
+| Password | `bookportal`|
+
+> **Tip:** El host es el *service name* del compose (`db-dev`), no el `container_name` (`bookportal-db-dev`). Docker resuelve los servicios por su clave en el YAML dentro de la red interna.
+
 ### Otros comandos útiles
 
 ```bash
