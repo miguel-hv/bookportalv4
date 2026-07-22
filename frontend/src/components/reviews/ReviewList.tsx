@@ -2,24 +2,12 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import type { ReviewResponse, PaginatedResponse } from '@/lib/auth-types'
-
-function formatDate(isoString: string): string {
-  const date = new Date(isoString)
-  const day = date.getUTCDate().toString().padStart(2, '0')
-  const month = (date.getUTCMonth() + 1).toString().padStart(2, '0')
-  const year = date.getUTCFullYear()
-  return `${day}/${month}/${year}`
-}
-
-function SkeletonCard() {
-  return (
-    <div className="animate-pulse rounded-xl bg-white p-6 shadow-lg border border-gray-100">
-      <div className="mb-3 h-5 w-48 rounded bg-gray-200" />
-      <div className="mb-3 h-4 w-full rounded bg-gray-200" />
-      <div className="h-4 w-32 rounded bg-gray-200" />
-    </div>
-  )
-}
+import ReviewCard from './ReviewCard'
+import ListPageHeader from '../ui/ListPageHeader'
+import SkeletonCard from '../ui/SkeletonCard'
+import ErrorMessage from '../ui/ErrorMessage'
+import EmptyMessage from '../ui/EmptyMessage'
+import LoadingSpinner from '../ui/LoadingSpinner'
 
 export default function ReviewList() {
   const [reviews, setReviews] = useState<ReviewResponse[]>([])
@@ -79,13 +67,14 @@ export default function ReviewList() {
   if (loading && reviews.length === 0) {
     return (
       <div className="w-full max-w-5xl py-8">
-        <h1 className="mb-8 text-center text-3xl font-bold text-gray-800">
-          Reseñas
-        </h1>
+        <ListPageHeader
+          title="Reseñas"
+          action={{ label: '+ Nueva reseña', href: '/reviews/add' }}
+        />
         <div className="space-y-6">
-          <SkeletonCard />
-          <SkeletonCard />
-          <SkeletonCard />
+          <SkeletonCard lines={3} />
+          <SkeletonCard lines={3} />
+          <SkeletonCard lines={3} />
         </div>
       </div>
     )
@@ -95,18 +84,11 @@ export default function ReviewList() {
   if (error && reviews.length === 0) {
     return (
       <div className="w-full max-w-5xl py-8">
-        <h1 className="mb-8 text-center text-3xl font-bold text-gray-800">
-          Reseñas
-        </h1>
-        <div className="flex flex-col items-center gap-4 rounded-xl bg-white p-8 shadow-lg">
-          <p className="text-gray-600">Error al cargar reseñas</p>
-          <button
-            onClick={() => fetchReviews(0)}
-            className="rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
-          >
-            Reintentar
-          </button>
-        </div>
+        <ListPageHeader
+          title="Reseñas"
+          action={{ label: '+ Nueva reseña', href: '/reviews/add' }}
+        />
+        <ErrorMessage message="Error al cargar reseñas" onRetry={() => fetchReviews(0)} />
       </div>
     )
   }
@@ -115,12 +97,11 @@ export default function ReviewList() {
   if (!loading && reviews.length === 0) {
     return (
       <div className="w-full max-w-5xl py-8">
-        <h1 className="mb-8 text-center text-3xl font-bold text-gray-800">
-          Reseñas
-        </h1>
-        <div className="flex flex-col items-center gap-4 rounded-xl bg-white p-8 shadow-lg">
-          <p className="text-gray-600">No hay reseñas todavía</p>
-        </div>
+        <ListPageHeader
+          title="Reseñas"
+          action={{ label: '+ Nueva reseña', href: '/reviews/add' }}
+        />
+        <EmptyMessage message="No hay reseñas todavía" />
       </div>
     )
   }
@@ -128,46 +109,26 @@ export default function ReviewList() {
   // --- Reviews loaded ---
   return (
     <div className="w-full max-w-5xl py-8">
-      <h1 className="mb-8 text-center text-3xl font-bold text-gray-800">
-        Reseñas
-      </h1>
+      <ListPageHeader
+        title="Reseñas"
+        action={{ label: '+ Nueva reseña', href: '/reviews/add' }}
+      />
 
       <div className="space-y-6">
         {reviews.map((review) => (
-          <div
-            key={review.id}
-            className="rounded-xl bg-white p-6 shadow-lg border border-gray-100"
-          >
-            <p className="text-lg font-bold text-gray-800">
-              {review.bookTitle}
-            </p>
-            <p className="mt-2 text-gray-600">{review.reviewText}</p>
-            <p className="mt-3 text-sm text-gray-500">
-              por {review.userName} — {formatDate(review.createdAt)}
-            </p>
-          </div>
+          <ReviewCard key={review.id} review={review} />
         ))}
       </div>
 
       {/* Error banner when loading more pages fails */}
       {error && reviews.length > 0 && (
-        <div className="mt-6 flex flex-col items-center gap-3 rounded-xl bg-white p-6 shadow-lg border border-gray-100">
-          <p className="text-gray-600">Error al cargar reseñas</p>
-          <button
-            onClick={() => fetchReviews(page)}
-            className="rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
-          >
-            Reintentar
-          </button>
+        <div className="mt-6">
+          <ErrorMessage message="Error al cargar reseñas" onRetry={() => fetchReviews(page)} />
         </div>
       )}
 
       {/* Loading indicator for subsequent pages */}
-      {loading && reviews.length > 0 && (
-        <div className="mt-6 flex justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
-        </div>
-      )}
+      {loading && reviews.length > 0 && <LoadingSpinner />}
 
       {/* Sentinel element — triggers next page load when visible */}
       {hasMore && (
