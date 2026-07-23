@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { AuthProvider } from '@/components/auth/AuthProvider'
+import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import Header from '@/components/layout/Header'
 import './globals.css'
 
@@ -16,8 +17,10 @@ export default function RootLayout({
     <html lang="es">
       <body>
         <AuthProvider>
-          <Header />
-          <div className="pt-16">{children}</div>
+          <ErrorBoundary>
+            <Header />
+            <div className="pt-16">{children}</div>
+          </ErrorBoundary>
         </AuthProvider>
       </body>
     </html>

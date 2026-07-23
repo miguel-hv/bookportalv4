@@ -1,0 +1,2 @@
+- meter logs y loki (logs) + grafana (visualization) +	prometheus (metrics) + tempo (traces) + cadvisor? (container metrics)
+- enfocar desde el punto de vista de aprender a usarlos para trabajar en empresa

@@ -1,7 +1,6 @@
 
 
-- meter logs y loki (logs) + grafana (visualization) +	prometheus (metrics) + tempo (traces) + cadvisor? (container metrics)
-- meter health check para verificar todo el stack de una
+- desplegar ver docker kubernetes y terraform; meter lo necesario para usar esos tres. Ver pasarela de pago como microservicio; ver cómo simular miles de peticiones concurrentes
 - meter tests con playground
 - meter resto de funcionalidad de la web según los pasos que tenemos
 - cambiar a arquitectura hexagonal

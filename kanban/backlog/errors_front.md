@@ -1,2 +1,1 @@
 - in frontend show errors from backend in a snackbar
-- add a log in frontend so the user can see (having into account this is a practise project) the events between front and back and the errors from the requests (including expired token, etc) 

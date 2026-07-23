@@ -88,7 +88,7 @@ class BookReviewControllerTest {
                 String.class
         );
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
@@ -222,7 +222,7 @@ class BookReviewControllerTest {
         List<?> content = (List<?>) pageMap.get("content");
         assertThat(content).hasSize(1);
         assertThat((int) pageMap.get("totalElements")).isGreaterThanOrEqualTo(2);
-        assertThat((int) pageMap.get("number")).isEqualTo(0);
+        assertThat((int) pageMap.get("page")).isEqualTo(0);
         assertThat((int) pageMap.get("size")).isEqualTo(1);
     }
 }
