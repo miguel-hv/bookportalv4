@@ -1,0 +1,29 @@
+# Review Checklist — global error manager (java + next)
+
+## Backend
+- [x] ErrorResponse record con error/message/errorCode/timestamp/path + factory methods
+- [x] GlobalExceptionHandler: validation, constraint, malformed body, missing param, TYPE MISMATCH, data integrity, 404, forbidden, internal
+- [x] SecurityConfig: AuthenticationEntryPoint (401) + AccessDeniedHandler (403) con JSON
+- [x] mvn compile + test: 44 tests, 0 failures
+- [x] GlobalExceptionHandlerTest: integración HTTP (401/404/400 malformed/400 validation/400 pattern/400 type mismatch) + directa (403/409/400/500)
+
+## Frontend
+- [x] api-client.ts centralizado con ApiError (status, errorCode, path)
+- [x] ErrorBoundary con reset + fallback configurable
+- [x] error.tsx (500) + not-found.tsx (404)
+- [x] layout.tsx envuelve children con ErrorBoundary
+- [x] tsc --noEmit limpio + 30 tests jest, 0 failures
+- [x] ErrorBoundary.test.tsx (5 casos) + api-client.test.ts (6 casos)
+- [x] FIX: api-client serializaba FormData con JSON.stringify (bug real encontrado por el test)
+
+## Validación bean activada
+- [x] @NotBlank/@Pattern/@Size en RegisterRequest, LoginRequest, RefreshRequest, LogoutRequest, CreateReviewRequest
+- [x] @Valid en AuthController (register/login/refresh/logout) + BookReviewController (createReview)
+- [x] Reglas consistentes con la validación manual existente en AuthService/BookReviewService (sin cambiar contrato)
+
+## Type mismatch arreglado
+- [x] MethodArgumentTypeMismatchException → 400 ERR_INVALID_PARAM con nombre del param, tipo esperado y valor recibido
+- [x] Test HTTP (page=abc) + test directo del handler
+
+## Hallazgos restantes
+- (ninguno)

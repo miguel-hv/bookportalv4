@@ -6,6 +6,7 @@ import com.bookportal.dto.response.ReviewResponse;
 import com.bookportal.service.BookReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +34,7 @@ public class BookReviewController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a review", description = "Create a new book review (requires authentication)")
-    public ReviewResponse createReview(@RequestBody CreateReviewRequest request) {
+    public ReviewResponse createReview(@Valid @RequestBody CreateReviewRequest request) {
         return bookReviewService.createReview(request);
     }
 

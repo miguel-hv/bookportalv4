@@ -9,6 +9,7 @@ import com.bookportal.dto.response.UserResponse;
 import com.bookportal.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,25 +32,25 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user", description = "Create a new user account and return JWT tokens")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
     }
 
     @PostMapping("/login")
     @Operation(summary = "Login", description = "Authenticate user and return JWT tokens")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/refresh")
     @Operation(summary = "Refresh access token", description = "Exchange a refresh token for a new access token")
-    public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest request) {
+    public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshRequest request) {
         return ResponseEntity.ok(authService.refresh(request));
     }
 
     @PostMapping("/logout")
     @Operation(summary = "Logout", description = "Invalidate the refresh token")
-    public ResponseEntity<Void> logout(@RequestBody LogoutRequest request) {
+    public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
         authService.logout(request);
         return ResponseEntity.noContent().build();
     }

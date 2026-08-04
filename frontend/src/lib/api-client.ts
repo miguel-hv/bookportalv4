@@ -60,7 +60,12 @@ export async function apiRequest<T = unknown>(
   const res = await fetch(url, {
     ...fetchOptions,
     headers,
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body:
+      body !== undefined
+        ? body instanceof FormData
+          ? body // FormData must NOT be serialized — fetch sets the boundary
+          : JSON.stringify(body)
+        : undefined,
   })
 
   // Parse response body (may be JSON or empty)

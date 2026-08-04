@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -93,6 +94,17 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 "Missing required parameter: " + ex.getParameterName(),
                 "ERR_MISSING_PARAM"
+        ).withPath(getPath(request));
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex, WebRequest request) {
+        String expected = (ex.getRequiredType() != null) ? ex.getRequiredType().getSimpleName() : "unknown";
+        ErrorResponse body = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Invalid value for parameter '" + ex.getName() + "': expected " + expected + ", got '" + ex.getValue() + "'",
+                "ERR_INVALID_PARAM"
         ).withPath(getPath(request));
         return ResponseEntity.badRequest().body(body);
     }
